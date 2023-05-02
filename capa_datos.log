@@ -1,0 +1,35 @@
+i:47:36 PM: DEBUG: [logger_base.py:15] Mensaje a nivel debug
+i:47:36 PM: INFO: [logger_base.py:16] Mensaje a nivel de info
+i:47:36 PM: WARNING: [logger_base.py:17] Mensaje a nivel de warning
+i:47:36 PM: ERROR: [logger_base.py:18] Mesanje a nivel de error
+i:47:36 PM: CRITICAL: [logger_base.py:19] Mesanje a nivel crítico
+i:53:25 PM: DEBUG: [Persona.py:53] 
+            Id Persona: 1, 
+            Nombre: Juan, 
+            Apellido: Perez,
+            Email: jperez@mail.com 
+i:53:25 PM: DEBUG: [Persona.py:56] 
+            Id Persona: None, 
+            Nombre: Juan, 
+            Apellido: Perez,
+            Email: jperez@mail.com 
+i:54:06 PM: DEBUG: [Persona.py:53] 
+            Id Persona: 1, 
+            Nombre: Juan, 
+            Apellido: Perez,
+            Email: jperez@mail.com 
+i:54:06 PM: DEBUG: [Persona.py:56] 
+            Id Persona: None, 
+            Nombre: Juan, 
+            Apellido: Perez,
+            Email: jperez@mail.com 
+i:54:06 PM: DEBUG: [Persona.py:59] 
+            Id Persona: 1, 
+            Nombre: None, 
+            Apellido: None,
+            Email: None 
+i:54:30 PM: DEBUG: [Persona.py:59] 
+            Id Persona: 1, 
+            Nombre: None, 
+            Apellido: None,
+            Email: None 
