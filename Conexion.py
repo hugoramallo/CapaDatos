@@ -1,88 +1,54 @@
-#Conexion
-import pyscopg2 as bd
-class conexion:
-    DATABASE = 'test_db'
-    USERNAME = 'postgres'
-    PASSWORD = 'Nube'
-    DB_PORT = '5432'
-    HOST = '127.0.0.1'
-    conexion = bd.connect()
-    cursor = bd.cursor()
+from logger_base import log
+import psycopg2 as bd
+import sys
+class Conexion:
+    _DATABASE = 'test_db'
+    _USERNAME = 'postgres'
+    _PASSWORD = 'Nube'
+    _DB_PORT = '5432'
+    _HOST = '127.0.0.1'
+    _conexion = None
+    _cursor = None
 
+    #CREAMOS LA CONEXIÓN A LA BBDD
     @classmethod
     def obtenerConexion(cls):
-        conexion = bd.connect(user='postgres', password='Nube', host='127.0.0.1', port='5432', database='test_db')
-
+        if cls._conexion is None:
+            try:
+                cls._conexion = bd.connect(host=cls._HOST,
+                                           user=cls._USERNAME,
+                                           password=cls._PASSWORD,
+                                           port=cls._DB_PORT,
+                                           database=cls._DATABASE
+                                           )
+                log.debug(f'Conexión exitosa!!!: {cls._conexion}')
+                # devolvemos la conexión
+                return cls._conexion
+            except Exception as e:
+                log.error(f'Ocurrió una excepción al obtener la conexión: {e}')
+                # terminamos la conexión
+                sys.exit()
+        else:
+            return cls._conexion
+    #CREAMOS EL CURSOR PARA PODER HACER CONSULTAS EN LA BBDD
     @classmethod
     def obtenerCursor(cls):
-        return
-
-    @classmethod
-    def cerrar(cls):
-        return
-
-
-
-
-
-
-
-conexion = psycopg2.connect(
-    user = 'postgres',
-    password = 'Nube',
-    host = '127.0.0.1',
-    port = '5432',
-    database = 'test_db')
-try:
-    with conexion:
-        with conexion.cursor() as cursor:
-            sentencia = 'DELETE FROM persona WHERE id_persona IN %s'
-            entrada = input('Proporciona los id_persona a eliminar (separados por comas): ')
-            #tupla de tuplas
-            valores = (tuple(entrada.split(',')),)
-            #ejecutamos
-            cursor.executemany(sentencia, valores)
-            registros_eliminados = cursor.rowcount
-            print(f'Registros Eliminados: {registros_eliminados}')
-#si hay excepción la reporta
-except Exception as e:
-    #imprimo excepción
-    print(f'Ocurrió un error {e}')
-finally:
-    #cerramos conexión
-    conexion.close()
+        if cls._cursor is None:
+            try:
+                cls._cursor = cls.obtenerConexion().cursor()
+                log.debug(f'Se abrió correctamente el cursor: {cls._cursor}')
+                return cls._cursor
+            except Exception as e:
+                log.error(f'Ocurrió una excepción al obtener el cursor: {e}')
+                sys.exit()
+        else:
+            return cls._cursor
 
 
 
-
-
-conexion = bd.connect(user='postgres', password='Nube', host='127.0.0.1', port='5432', database='test_db')
-
-try:
-    #autocommit en false es que no se guarden los cambios de manera automática
-    #para hacerlo tenemos que hacer commit al terminar la sentencia
-    #conexion.autocommit = False #este es el valor por defecto
-    with conexion:
-        with conexion.cursor() as cursor:
-            cursor = conexion.cursor()
-            sentencia = 'INSERT INTO persona(nombre, apellido, email) VALUES(%s, %s, %s)'
-            valores = ('Alex', 'Rojas', 'arojas@mail.com')
-            #ejecutamos sentencia
-            cursor.execute(sentencia, valores)
-            sentencia = 'UPDATE persona SET nombre=%s, apellido=%s, email=%s WHERE id_persona =%s'
-            valores = ('Juan', 'Perez', 'jperez@mail.com',1 )
-            #recordar que el cursor siempre es necesario para ejecutar la sentencia
-            cursor.execute(sentencia, valores)
-            #grabamos los datos en la BBDD, lo ideal es usar o with o este modo sin autocommit
-            conexion.commit()
-            print('Termina la transacción, se hizo commit')
-except Exception as e:
-    #imprimo excepción
-    #si hay excepción, hacemos rollback, volvemos al principio del proceso
-    #para que no haya rollback tienen que ejecutarse toda slas sentencias
-    #conexion.rollback()
-    #with hace el rollback de manera automática
-    print(f'Ocurrió un error, se hizo rollback {e}')
-finally:
-    #cerramos conexión
-    conexion.close()
+if __name__ == "__main__":
+    #conectamos a la BBDD
+    Conexion.obtenerConexion()
+    #obtenemos el cursor
+    Conexion.obtenerCursor()
+    #ya podemos comenzar a enviar consultas SQL
